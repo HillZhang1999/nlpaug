@@ -213,6 +213,7 @@ class ContextualWordEmbsAug(WordAugmenter):
 
         ids = self.model.get_tokenizer().convert_tokens_to_ids(tokens[:self.max_num_token])
         head_text = self.model.get_tokenizer().decode(ids).strip()
+        # import pdb; pdb.set_trace()
         # head_text = self.model.get_tokenizer().convert_tokens_to_string(tokens[:self.max_num_token]).strip()
         tail_text = None
         if len(tokens) >= self.max_num_token:

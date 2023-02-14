@@ -3,13 +3,11 @@
 """
 
 import os
-
 from nlpaug.augmenter.word import WordAugmenter
 from nlpaug.util import Action, Doc, PartOfSpeech, WarningException, WarningName, WarningCode, WarningMessage
 import nlpaug.model.word_dict as nmw
 
 PPDB_MODEL = {}
-
 
 def init_ppdb_model(dict_path, force_reload=False):
     # Load model once at runtime
@@ -115,6 +113,7 @@ class SynonymAug(WordAugmenter):
             
         change_seq = 0
         doc = Doc(data, self.tokenizer(data))
+        # import pdb; pdb.set_trace()
 
         original_tokens = doc.get_original_tokens()
 
@@ -138,7 +137,8 @@ class SynonymAug(WordAugmenter):
                 for word_pos in word_poses:
                     candidates.extend(self.model.predict(pos[aug_idx][0], pos=word_pos))
 
-            candidates = [c for c in candidates if c.lower() != original_token.lower()]
+            candidates = [c for c in candidates if c.lower() != original_token.lower() and "_" not in c and "-" not in c and self.validate_via_vocab(c)]  # hack: 仅保留单个词的替换
+            # print(candidates)
 
             if len(candidates) > 0:
                 candidate = self.sample(candidates, 1)[0]

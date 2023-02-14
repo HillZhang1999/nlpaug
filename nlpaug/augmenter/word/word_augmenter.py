@@ -1,7 +1,8 @@
 import string
 import re
 from typing import Iterable
-
+from pathlib import Path
+import os
 from nlpaug.util import Method
 from nlpaug.util.text.tokenizer import Tokenizer
 from nlpaug import Augmenter
@@ -20,6 +21,14 @@ class WordAugmenter(Augmenter):
         self.reverse_tokenizer = reverse_tokenizer or Tokenizer.reverse_tokenizer
         self.stopwords = stopwords
         self.stopwords_regex = re.compile(stopwords_regex) if stopwords_regex else stopwords_regex
+        
+        vocab_file = os.path.join(Path(__file__).resolve().parent, "vocab.txt")
+        self.valid_vocab = set([w.strip("\n") for w in open(vocab_file, "r").readlines()])
+
+    def validate_via_vocab(self, word):
+        if word in self.valid_vocab or word.lower() in self.valid_vocab:
+            return True
+        return False
 
     @classmethod
     def clean(cls, data):

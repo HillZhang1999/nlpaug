@@ -152,8 +152,13 @@ class WordEmbsAug(WordAugmenter):
 
         for aug_idx in aug_idxes:
             original_token = doc.get_token(aug_idx).get_latest_token().token
-            candidate_tokens = self.model.predict(original_token, n=1)
-            substitute_token = self.sample(candidate_tokens, 1)[0]
+            candidate_tokens = [c for c in self.model.predict(original_token, n=1) if "_" not in c and "-" not in c and self.validate_via_vocab(c)]  # hack: 仅保留单个词的替换
+            if len(candidate_tokens) > 0:
+                substitute_token = self.sample(candidate_tokens, 1)[0]
+            else:
+                substitute_token = original_token
+                # import pdb; pdb.set_trace()
+            
             if aug_idx == 0:
                 substitute_token = self.align_capitalization(original_token, substitute_token)
 
