@@ -111,7 +111,7 @@ venv.bak/
 
 # model
 model/*
-*.txt
+# *.txt
 *.bin
 *.vec
 *.zip
